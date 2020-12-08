@@ -23,18 +23,15 @@
   until: __download_binary is succeeded
   retries: 5
   delay: 2
-  delegate_to: localhost
   check_mode: false
-  become: false
 
-- name: Unpack apache_exporter binary
+- name: Unpack node_exporter binary
   unarchive:
-    src: "/tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}.tar.gz"
+    src : "/tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}.tar.gz"
     dest: "/tmp"
     creates: "/tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}/apache_exporter"
-  delegate_to: localhost
+    remote_src: yes
   check_mode: false
-  become: false
 
 - name: Create local bin dir
   file:
@@ -46,6 +43,7 @@
   copy:
     src: /tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}/apache_exporter
     dest: /usr/local/bin/apache_exporter
+    remote_src: yes
     mode: 0750
     owner: "{{ apache_exporter_system_user }}"
     group: "{{ apache_exporter_system_group }}"
